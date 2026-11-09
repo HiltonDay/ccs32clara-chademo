@@ -225,7 +225,7 @@ void ChademoCharger::HandlePendingCarMessages()
                     _carData.NomVoltOverride,
                     _carData.MaxVoltOverride
                 );
-                _carData.BatteryVoltageIsSet = true;
+                //_carData.BatteryVoltageIsSet = true;
             }
         }
 
@@ -238,7 +238,7 @@ void ChademoCharger::HandlePendingCarMessages()
         COMPARE_SET(_msg103.m.BatteryVoltage, _msg103_isr.m.BatteryVoltage, "103.BatteryVoltage %d -> %d");
 
         _carData.BatteryVoltage = _msg103.m.BatteryVoltage;
-        _carData.BatteryVoltageIsSet = true;
+        //_carData.BatteryVoltageIsSet = true;
         _carData.BatteryVoltageIsMeasured = true;
     }
     if (_msg110_pending)
