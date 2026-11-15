@@ -57,6 +57,11 @@ It would then also be possible to detect if the adapter contactor is welded, and
 
 How I describe it is also how the original firmware works, AFAICT, allthou it seems to use a fixed nominal battery voltage of 350 volt and it emulate chademo 0.9 so the timing may be different.
 
+## Voltage estimation
+AFAICS, most cars seems to get away with the ZE1 estimation curve (adjusted for target voltage). As long as the estimated voltage is within +-20V at the time of precharge/car contactors close, the car and charger is generally happy. Some cars/chargers may allow more, but AFACS, Leaf uses approx +-20V.
+One known exception is old Leaf with 20-30kwh battery, it seems to use a totally different curve. I don't know if all Leaf with 20-30kwh battery has this curve, or if it was changed in some model years. At least one Leaf 2017 30kwh, seems to follow the ZE1 curve, so it may instead be a change that happened in a year (eg. 2017) instead of having to do with the 20-30kwh battery. AV1 is the ZE0 curve.
+<img width="1350" height="825" alt="graph" src="https://github.com/user-attachments/assets/d730ee28-b7bc-4a7c-929c-0713e3aba95d" />
+
 ## Stop button/power off
 Shortly pressing stop button will initiate power off pending.
 When power off is pending, adapter should power off as soon as both ccs and chademo logic says that the plug is unlocked (adapter does not have physical locks on the plugs, but logically).
