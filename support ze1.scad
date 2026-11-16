@@ -3,14 +3,15 @@
 // ============================================================================
 
 // --- User-Adjustable Parameters ---
-height    = 46.2;  // Total extrusion height of the part (Z-axis, in mm)
-cable_d   = 15.0;  // Diameter of the cylindrical cable channel (15 mm)
-cut_depth = 10.5;  // Depth of the cable cut into the arc
+height      = 46.2;  // Total extrusion height of the part (Z-axis, in mm)
+cable_d     = 15.0;  // Diameter of the cylindrical cable channel (15 mm)
+cut_depth   = 10.5;  // Depth of the cable cut into the arc
+tip_width_x = 11.0; // Width/thickness of the angled front tip in +X direction (default = 10.92 mm)
 
 // --- Rear Cylindrical Arc Settings (Adjust freely; geometry updates automatically) ---
 cyl_arc_x = 15.40; // X-coordinate of the rear arc cylinder center
 cyl_arc_y = 58.00; // Y-center to make plateau height difference 3.95 mm
-arc_d     = 25.0;  // Outer diameter of the rear cylindrical arc (Ø 25 mm)
+arc_d     = 25.0;  // Outer diameter of the rear cylindrical arc (Ø˜ 25 mm)
 arc_r     = arc_d / 2.0; // Radius of the rear cylindrical arc (12.5 mm)
 
 // --- Cable Channel Orientation ---
@@ -20,12 +21,16 @@ arc_angle = 90;    // Angular position of the cable channel along the arc (degre
 // Automatic Geometry Calculations (Do not edit below unless changing base shape)
 // ============================================================================
 
-// Reference corner where the tapered front transitions into the right main wall
-p3_x = 20.58;
+// Front tip +X offset relative to baseline (10.92 mm).
+// Positive values widen the angled tip in +X direction; negative values narrow it.
+tip_dx = tip_width_x - 10.92;
+
+// Reference corner where the tapered front transitions into the right main wall (shifts in +X)
+p3_x = 20.58 + tip_dx;
 p3_y = 23.94;
 
 // 1. Calculate the exact tangent point from P3 onto the rear arc cylinder.
-//    This prevents any bump or step regardless of cylinder position or diameter.
+//    This prevents any bump or step regardless of cylinder position, diameter, or tip width.
 dx        = cyl_arc_x - p3_x;
 dy        = cyl_arc_y - p3_y;
 dist_p3_c = sqrt(dx * dx + dy * dy);     // Distance from P3 to cylinder center
@@ -66,15 +71,15 @@ difference() {
     union() {
         linear_extrude(height = height) {
             polygon(points = [
-                [19.59,  0.00],             // P1: Front-left corner of the tapered tip
-                [30.51,  5.11],             // P2: Front-right corner of the tapered tip
-                [p3_x,   p3_y],             // P3: Inner corner transitioning to right wall
-                [tan_x,  tan_y],            // Auto-calculated tangent point into rear cylinder
-                [cyl_arc_x, cyl_arc_y],     // Cylinder center (anchors polygon inside circle)
-                [plat_meet_x, plat_meet_y], // Auto-calculated junction with the rear plateau
-                [ 0.00, 66.55],             // Rear-left corner of the plateau
-                [ 1.18, 17.01],             // Left wall corner meeting the front step-in
-                [ 9.17, 17.96]              // Inner step-in corner leading to the tapered tip
+                [19.59,          0.00],       // P1: Front-left corner of the tapered tip
+                [30.51 + tip_dx, 5.11],       // P2: Front-right corner of the tapered tip (grows in +X)
+                [p3_x,           p3_y],       // P3: Inner corner transitioning to right wall (grows in +X)
+                [tan_x,          tan_y],      // Auto-calculated tangent point into rear cylinder
+                [cyl_arc_x,      cyl_arc_y],  // Cylinder center (anchors polygon inside circle)
+                [plat_meet_x,    plat_meet_y], // Auto-calculated junction with the rear plateau
+                [ 0.00,         66.55],       // Rear-left corner of the plateau
+                [ 1.18,         17.01],       // Left wall corner meeting the front step-in
+                [ 9.17,         17.96]        // Inner step-in corner leading to the tapered tip
             ]);
         }
 
